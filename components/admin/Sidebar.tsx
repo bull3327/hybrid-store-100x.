@@ -9,12 +9,13 @@ import {
     FolderTree,
     LogOut,
     Mountain,
-    ShoppingCart
+    ShoppingCart,
+    Radar
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 const sidebarLinks = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/copilot", label: "Trend Copilot", icon: Radar },
     { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
     { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/import", label: "Import Center", icon: Download },
