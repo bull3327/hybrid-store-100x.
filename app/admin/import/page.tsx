@@ -57,8 +57,6 @@ export default function AdminImportPage() {
                 </p>
             </div>
 
-            import {importProduct} from './actions';
-            // ... inside the component
             {/* Real Working Import Form */}
             <div className="rounded-xl border bg-card p-8 shadow-sm">
                 <div className="mx-auto max-w-2xl text-center space-y-4">
