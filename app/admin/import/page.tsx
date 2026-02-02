@@ -1,12 +1,16 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     PlusCircle,
     Globe,
     Link as LinkIcon,
     ShoppingCart,
-    ArrowRight
+    ArrowRight,
+    Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { importProduct } from './actions';
 
 const IMPORT_SOURCES = [
     {
@@ -48,6 +52,36 @@ const IMPORT_SOURCES = [
 ];
 
 export default function AdminImportPage() {
+    const [url, setUrl] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+
+    const handleImport = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        try {
+            const res = await fetch('/api/products/import', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                // Redirect to Edit Page on success
+                router.push(`/admin/products/${data.productId}`);
+            } else {
+                alert("Failed to import. Please check the URL.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error connecting to server.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className="space-y-8">
             <div>
@@ -64,15 +98,26 @@ export default function AdminImportPage() {
                     <p className="text-sm text-muted-foreground">
                         Paste a product link from Amazon, Walmart, or AliExpress. We'll auto-detect the source.
                     </p>
-                    <form action={importProduct} className="flex gap-2">
+                    <form onSubmit={handleImport} className="flex gap-2">
                         <input
                             name="url"
                             type="text"
                             required
+                            value={url}
+                            onChange={(e) => setUrl(e.target.value)}
                             placeholder="https://amazon.com/dp/..."
                             className="flex-1 rounded-md border bg-background px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                         />
-                        <Button type="submit">Import Product</Button>
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Importing...
+                                </>
+                            ) : (
+                                "Import Product"
+                            )}
+                        </Button>
                     </form>
                 </div>
             </div>
