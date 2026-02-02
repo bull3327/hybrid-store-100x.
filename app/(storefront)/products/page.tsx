@@ -71,7 +71,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                             compareAtPrice={product.compareAtPrice ? Number(product.compareAtPrice) : undefined}
                             imageUrl={product.images[0]?.url || '/placeholder.png'}
                             category={product.productType} // Using Type as category for now since Category is complex
-                            type={product.productType}
+                            type={product.productType as 'DROPSHIP' | 'AFFILIATE'}
                             affiliateUrl={product.affiliateUrl || undefined}
                             shippingBadge={product.shippingDays || undefined}
                         />

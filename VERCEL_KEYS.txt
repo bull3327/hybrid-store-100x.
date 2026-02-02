@@ -26,6 +26,10 @@ in the Settings tab.
    * Required for orders to change from "Pending" to "Paid".
 
 -------------------------------------------------------------------
-(Optional Variables - code handles these automatically now)
-- NEXTAUTH_URL
-- DATABASE_URL (If using SQLite, this files is uploaded automatically)
+-------------------------------------------------------------------
+5. DATABASE_URL
+   Value: postgresql://postgres.yhsqlxuodwustccrgwid:torezpizzatorez@aws-0-us-west-2.pooler.supabase.com:6543/postgres?pgbouncer=true
+
+-------------------------------------------------------------------
+6. DIRECT_URL
+   Value: postgresql://postgres.yhsqlxuodwustccrgwid:torezpizzatorez@aws-0-us-west-2.pooler.supabase.com:5432/postgres
