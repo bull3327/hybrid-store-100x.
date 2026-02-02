@@ -8,12 +8,14 @@ import {
     Settings,
     FolderTree,
     LogOut,
-    Mountain
+    Mountain,
+    ShoppingCart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const sidebarLinks = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
     { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/import", label: "Import Center", icon: Download },
     { href: "/admin/promotions", label: "Promotions", icon: Tags },

@@ -238,6 +238,10 @@ model Order {
   
   // Shipping Info
   shippingAddress String?     // Json -> String
+  fulfillmentStatus String    @default("UNFULFILLED") // UNFULFILLED, FULFILLED, PARTIAL
+  trackingNumber    String?
+  trackingCarrier   String?
+  trackingUrl       String?
   
   // Relations
   items           OrderItem[]
@@ -259,6 +263,11 @@ model OrderItem {
   
   quantity  Int
   price     Decimal 
+  
+  // Per-item fulfillment (High IQ for multi-supplier orders)
+  supplierOrderId   String?
+  fulfillmentStatus String    @default("UNFULFILLED")
+  trackingNumber    String?
   
   @@index([orderId])
   @@index([productId])
