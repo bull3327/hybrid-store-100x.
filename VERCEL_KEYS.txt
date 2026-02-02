@@ -1,0 +1,31 @@
+
+===================================================================
+Vercel Deployment Cheat Sheet
+===================================================================
+
+When you deploy to Vercel, you need to add these "Environment Variables"
+in the Settings tab.
+
+-------------------------------------------------------------------
+1. STRIPE_SECRET_KEY
+   Value: (Your Stripe Secret Key starting with sk_live_...)
+
+-------------------------------------------------------------------
+2. AMAZON_PARTNER_TAG
+   Value: (Your Amazon ID, e.g., yourname-20)
+   * This will automatically replace all affiliate links on the site!
+
+-------------------------------------------------------------------
+3. NEXTAUTH_SECRET
+   Value: (Type any long random string of letters/numbers here)
+   * Required for security.
+
+-------------------------------------------------------------------
+4. STRIPE_WEBHOOK_SECRET
+   Value: (Get this from Stripe Dashboard > Developers > Webhooks)
+   * Required for orders to change from "Pending" to "Paid".
+
+-------------------------------------------------------------------
+(Optional Variables - code handles these automatically now)
+- NEXTAUTH_URL
+- DATABASE_URL (If using SQLite, this files is uploaded automatically)

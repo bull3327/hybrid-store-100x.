@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* Futuristic / Tech Palette
+       Background: Deep Navy/Black (#0a0f1c)
+       Foreground: Crisp White (#ffffff)
+       Primary: Electric Purple (#7c3aed)
+       Secondary: Deep Blue Grey (#1f2937)
+       Accent: Electric Orange/Red (#ff4500)
+    */
+
+        /* Base Colors - HSL Values */
+        --background: 223 47% 7%;
+        /* #0a0f1c */
+        --foreground: 0 0% 100%;
+        /* #ffffff */
+
+        --card: 220 39% 11%;
+        /* Semi-transparent dark card */
+        --card-foreground: 0 0% 100%;
+
+        --popover: 220 39% 11%;
+        --popover-foreground: 0 0% 100%;
+
+        --primary: 263 70% 50%;
+        /* Electric Purple */
+        --primary-foreground: 0 0% 100%;
+
+        --secondary: 217 33% 17%;
+        --secondary-foreground: 0 0% 100%;
+
+        --muted: 217 33% 17%;
+        --muted-foreground: 215 20% 65%;
+
+        --accent: 16 100% 50%;
+        /* Electric Orange */
+        --accent-foreground: 0 0% 100%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 100%;
+
+        --border: 217 33% 20%;
+        --input: 217 33% 20%;
+        --ring: 263 70% 50%;
+
+        --radius: 0.5rem;
+        /* Sleeker, less organic */
+    }
+
+    .dark {
+        /* Same as root for forced dark mode aesthetic */
+        --background: 223 47% 7%;
+        --foreground: 0 0% 100%;
+        --card: 220 39% 11%;
+        --card-foreground: 0 0% 100%;
+        --popover: 220 39% 11%;
+        --popover-foreground: 0 0% 100%;
+        --primary: 263 70% 50%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 217 33% 17%;
+        --secondary-foreground: 0 0% 100%;
+        --muted: 217 33% 17%;
+        --muted-foreground: 215 20% 65%;
+        --accent: 16 100% 50%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 217 33% 20%;
+        --input: 217 33% 20%;
+        --ring: 263 70% 50%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground transition-colors duration-300;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply tracking-tight font-bold;
+    }
+}
+
+@layer utilities {
+    .glass {
+        @apply bg-card/60 backdrop-blur-md border border-white/10 shadow-xl;
+    }
+
+    .text-glow {
+        text-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+    }
+
+    .btn-primary-glow {
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-glow:hover {
+        box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+    }
+}

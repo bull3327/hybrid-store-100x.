@@ -1,0 +1,264 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER & AUTH
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String    // Hashed
+  name          String?
+  role          String    @default("ADMIN")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  orders        Order[]
+}
+
+// ============================================
+// PRODUCTS
+// ============================================
+
+model Product {
+  id              String          @id @default(cuid())
+  slug            String          @unique
+  title           String
+  description     String          
+  descriptionHtml String?         
+  
+  // Pricing
+  price           Decimal         
+  compareAtPrice  Decimal?        
+  costPrice       Decimal?        
+  
+  // Product Type
+  productType     String          @default("DROPSHIP")
+  affiliateUrl    String?         
+  
+  // Source Info
+  sourceplatform  String          @default("MANUAL")
+  sourceId        String?         
+  sourceUrl       String?         
+  
+  // Shipping/Badges
+  supplierSource  String?         
+  shippingDays    String?         
+  badge           String?         
+  
+  // Status
+  status          String          @default("DRAFT")
+  publishedAt     DateTime?
+  
+  // Relations
+  images          ProductImage[]
+  variants        ProductVariant[]
+  collections     CollectionProduct[]
+  orderItems      OrderItem[]
+  
+  // Timestamps
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  // Indexes
+  @@index([status])
+  @@index([productType])
+  @@index([sourceplatform])
+}
+
+model ProductImage {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url         String
+  altText     String?
+  position    Int      @default(0)
+  createdAt   DateTime @default(now())
+  
+  @@index([productId])
+}
+
+model ProductVariant {
+  id              String   @id @default(cuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  title           String   
+  sku             String?
+  price           Decimal  
+  compareAtPrice  Decimal? 
+  
+  // Options
+  option1Name     String?  
+  option1Value    String?  
+  option2Name     String?  
+  option2Value    String?  
+  option3Name     String?
+  option3Value    String?
+  
+  // Inventory
+  inventoryQty    Int      @default(0)
+  trackInventory  Boolean  @default(false)
+  
+  // Shopify sync
+  shopifyVariantId String?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([productId])
+}
+
+// ============================================
+// COLLECTIONS
+// ============================================
+
+model Collection {
+  id          String              @id @default(cuid())
+  handle      String              @unique
+  title       String
+  description String?             
+  imageUrl    String?
+  
+  products    CollectionProduct[]
+  
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model CollectionProduct {
+  id            String     @id @default(cuid())
+  collectionId  String
+  collection    Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  position      Int        @default(0)
+  
+  @@unique([collectionId, productId])
+  @@index([collectionId])
+  @@index([productId])
+}
+
+// ============================================
+// PROMOTIONS
+// ============================================
+
+model Promotion {
+  id          String        @id @default(cuid())
+  type        String        
+  productId   String?
+  
+  // For Flash Sales
+  title       String?
+  discount    Decimal?      
+  startsAt    DateTime?
+  endsAt      DateTime?
+  
+  isActive    Boolean       @default(true)
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  @@unique([type])  
+  @@index([type, isActive])
+}
+
+// ============================================
+// SETTINGS & INTEGRATIONS
+// ============================================
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   
+  encrypted Boolean  @default(false)
+  
+  updatedAt DateTime @updatedAt
+}
+
+model Integration {
+  id          String            @id @default(cuid())
+  platform    String            @unique 
+  apiKey      String?           
+  apiSecret   String?           
+  accessToken String?           
+  metadata    String?           // Json -> String
+  isConnected Boolean           @default(false)
+  lastSyncAt  DateTime?
+  
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+// ============================================
+// ANALYTICS (Optional)
+// ============================================
+
+model ClickEvent {
+  id          String   @id @default(cuid())
+  productId   String
+  eventType   String   
+  referrer    String?
+  userAgent   String?
+  ipHash      String?  
+  createdAt   DateTime @default(now())
+  
+  @@index([productId])
+  @@index([createdAt])
+}
+
+// ============================================
+// ORDERS
+// ============================================
+
+model Order {
+  id              String      @id @default(cuid())
+  // orderNumber removed because SQLite autoincrement issue
+  
+  // Customer Info
+  user            User?       @relation(fields: [userId], references: [id])
+  userId          String?
+  guestEmail      String?
+  customerName    String?
+  
+  // Payment Info
+  stripeSessionId String?     @unique
+  amountTotal     Decimal     
+  currency        String      @default("usd")
+  status          String      @default("PENDING") 
+  paymentStatus   String      @default("unpaid") 
+  
+  // Shipping Info
+  shippingAddress String?     // Json -> String
+  
+  // Relations
+  items           OrderItem[]
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  @@index([userId])
+  @@index([stripeSessionId])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  
+  quantity  Int
+  price     Decimal 
+  
+  @@index([orderId])
+  @@index([productId])
+}
