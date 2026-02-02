@@ -6,6 +6,7 @@ import {
     ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { importProduct } from './actions';
 
 const IMPORT_SOURCES = [
     {
