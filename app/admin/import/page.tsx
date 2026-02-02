@@ -56,21 +56,25 @@ export default function AdminImportPage() {
                 </p>
             </div>
 
-            {/* URL Paster (Primary Action) */}
+            import {importProduct} from './actions';
+            // ... inside the component
+            {/* Real Working Import Form */}
             <div className="rounded-xl border bg-card p-8 shadow-sm">
                 <div className="mx-auto max-w-2xl text-center space-y-4">
                     <h2 className="text-lg font-semibold">Quick Import via URL</h2>
                     <p className="text-sm text-muted-foreground">
                         Paste a product link from Amazon, Walmart, or AliExpress. We'll auto-detect the source.
                     </p>
-                    <div className="flex gap-2">
+                    <form action={importProduct} className="flex gap-2">
                         <input
+                            name="url"
                             type="text"
+                            required
                             placeholder="https://amazon.com/dp/..."
                             className="flex-1 rounded-md border bg-background px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20"
                         />
-                        <Button>Import</Button>
-                    </div>
+                        <Button type="submit">Import Product</Button>
+                    </form>
                 </div>
             </div>
 
