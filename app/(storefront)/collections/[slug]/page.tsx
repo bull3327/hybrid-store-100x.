@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
 import { notFound } from 'next/navigation';
 import { ProductCard } from '@/components/storefront/ProductCard';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma'; // Use singleton
 
 export default async function CollectionPage({ params }: { params: { slug: string } }) {
+    console.log(`[Collection] Loading: ${params.slug}`); // Debug Log
+
     // 1. Fetch the Collection
     const collection = await prisma.collection.findUnique({
         where: { handle: params.slug },
