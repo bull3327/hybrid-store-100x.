@@ -61,11 +61,13 @@ export default async function CollectionPage({ params }: { params: { slug: strin
                     {products.map((product) => (
                         <ProductCard
                             key={product.id}
-                            product={{
-                                ...product,
-                                price: Number(product.price),
-                                type: product.productType as 'DROPSHIP' | 'AFFILIATE'
-                            }}
+                            id={product.id}
+                            title={product.title}
+                            price={Number(product.price)}
+                            imageUrl={product.images[0]?.url || '/placeholder.png'}
+                            category="Collection"
+                            type={product.productType as 'DROPSHIP' | 'AFFILIATE'}
+                            affiliateUrl={product.sourceUrl || '#'}
                         />
                     ))}
                 </div>
