@@ -55,32 +55,11 @@ export default function CopilotPage() {
     const [purgeLoading, setPurgeLoading] = useState(false);
     const router = useRouter();
 
-    const handleImport = async (url: string) => {
-        if (!url) return;
-        console.log("Launching import for:", url);
-        setLoading(true);
-
-        try {
-            const res = await fetch('/api/products/import', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url })
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                console.log("Import success, redirecting to:", data.productId);
-                router.push(`/admin/products/${data.productId}`);
-            } else {
-                console.error("Import failed status:", res.status);
-                alert("Failed to launch product. Check console.");
-            }
-        } catch (e) {
-            console.error("Import error:", e);
-            alert("Auto-import failed connecting to server.");
-        } finally {
-            setLoading(false);
-        }
+    // Updated Handler: Just redirects to the Import Tool with the URL pre-filled
+    const launchManual = (url: string) => {
+        // Encode the URL so it passes safely
+        const safeUrl = encodeURIComponent(url);
+        router.push(`/admin/import?url=${safeUrl}`);
     };
 
     const handlePurge = async () => {
@@ -97,7 +76,7 @@ export default function CopilotPage() {
     return (
         <div className="p-8 max-w-7xl mx-auto space-y-12">
 
-            {/* HERDER HEADER */}
+            {/* HEADER */}
             <div>
                 <h1 className="text-4xl font-black tracking-tight flex items-center gap-3">
                     <Radar className="h-10 w-10 text-primary" />
@@ -112,7 +91,7 @@ export default function CopilotPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                 {/* 1. THE HUNTER (Trending Feed) */}
-                <div className="border rounded-2xl bg-card overflow-hidden shadow-sm">
+                <div className="border rounded-2xl bg-card overflow-hidden shadow-sm flex flex-col">
                     <div className="p-6 border-b bg-gradient-to-r from-blue-500/10 to-transparent">
                         <h2 className="text-xl font-bold flex items-center gap-2">
                             <TrendingUp className="h-5 w-5 text-blue-600" />
@@ -120,7 +99,25 @@ export default function CopilotPage() {
                         </h2>
                         <p className="text-sm text-muted-foreground">Top movers detected in your niche (Live)</p>
                     </div>
-                    <div className="divide-y">
+
+                    {/* Quick Add Box */}
+                    <div className="p-4 bg-muted/20 border-b">
+                        <div className="flex gap-2">
+                            <input
+                                placeholder="Paste ANY Amazon/Walmart URL here..."
+                                className="flex-1 text-sm p-2 rounded border"
+                                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter') launchManual(e.currentTarget.value)
+                                }}
+                            />
+                            <Button size="sm" onClick={() => {
+                                const input = document.querySelector('input[placeholder*="Paste ANY"]') as HTMLInputElement;
+                                if (input?.value) launchManual(input.value);
+                            }}>Go</Button>
+                        </div>
+                    </div>
+
+                    <div className="divide-y flex-1 overflow-y-auto max-h-[600px]">
                         {TRENDING_OPPORTUNITIES.map((item) => (
                             <div key={item.id} className="p-5 flex items-center gap-4 hover:bg-muted/50 transition-colors">
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -134,20 +131,14 @@ export default function CopilotPage() {
                                 </div>
                                 <Button
                                     size="sm"
-                                    onClick={() => handleImport(item.url)}
-                                    disabled={loading}
+                                    onClick={() => launchManual(item.url)}
                                     className="gap-2"
                                 >
-                                    {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : <ExternalLink className="h-3 w-3" />}
+                                    <ExternalLink className="h-3 w-3" />
                                     Launch
                                 </Button>
                             </div>
                         ))}
-                    </div>
-                    <div className="p-4 border-t bg-muted/20 text-center">
-                        <Button variant="ghost" size="sm" className="text-muted-foreground text-xs">
-                            <RefreshCw className="h-3 w-3 mr-2" /> Refresh Feed (API)
-                        </Button>
                     </div>
                 </div>
 

@@ -1,7 +1,5 @@
-'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
     PlusCircle,
     Globe,
@@ -51,10 +49,18 @@ const IMPORT_SOURCES = [
     }
 ];
 
-export default function AdminImportPage() {
+function ImportContent() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    // Auto-fill URL from query param (sent by Copilot)
     const [url, setUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
+
+    useEffect(() => {
+        const queryUrl = searchParams.get('url');
+        if (queryUrl) setUrl(queryUrl);
+    }, [searchParams]);
 
     const handleImport = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -155,5 +161,13 @@ export default function AdminImportPage() {
                 ))}
             </div>
         </div>
+    );
+}
+
+export default function AdminImportPage() {
+    return (
+        <Suspense fallback={<div>Loading Import Tools...</div>}>
+            <ImportContent />
+        </Suspense>
     );
 }
