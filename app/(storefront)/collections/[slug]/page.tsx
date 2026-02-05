@@ -7,11 +7,15 @@ const prisma = new PrismaClient();
 export default async function CollectionPage({ params }: { params: { slug: string } }) {
     // 1. Fetch the Collection
     const collection = await prisma.collection.findUnique({
-        where: { slug: params.slug },
+        where: { handle: params.slug },
         include: {
             products: {
                 include: {
-                    images: true
+                    product: {
+                        include: {
+                            images: true
+                        }
+                    }
                 }
             }
         }
@@ -19,7 +23,7 @@ export default async function CollectionPage({ params }: { params: { slug: strin
 
     // 2. Fallback: If no collection found, check if it's a "Smart Collection" keyword
     // e.g. "trending", "new-arrivals", "all"
-    let products = collection?.products || [];
+    let products = collection?.products.map(p => p.product) || [];
     let title = collection?.title || params.slug;
 
     if (!collection) {
