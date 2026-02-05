@@ -1,20 +1,15 @@
 
 @echo off
 echo ===================================================
-echo   DIRECT DEPLOYMENT TO VERCEL
+echo   AUTO-DEPLOYING HYBRID STORE
 echo ===================================================
-echo.
-echo We are going to upload your site directly.
-echo.
-echo 1. A browser window might open. Log in to Vercel if asked.
-echo 2. When asked questions below (like "Set up and deploy?"),
-echo    just press ENTER to say "Yes" to everything.
-echo.
-echo Starting...
-echo.
 
-cmd /c "npx -y vercel"
+echo 1. Updating Database...
+call npx prisma db seed
+
+echo 2. Pushing to Vercel (Production)...
+call npx vercel --prod --yes
 
 echo.
-echo Deployment Complete (hopefully!)
+echo DONE!
 pause

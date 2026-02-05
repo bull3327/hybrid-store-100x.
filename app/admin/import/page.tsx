@@ -29,7 +29,7 @@ const IMPORT_SOURCES = [
         icon: ShoppingCart,
         color: 'bg-orange-500',
         type: 'AFFILIATE',
-        status: 'Active'
+        status: 'Inactive'
     },
     {
         id: 'walmart',
@@ -38,7 +38,7 @@ const IMPORT_SOURCES = [
         icon: LinkIcon,
         color: 'bg-blue-500',
         type: 'AFFILIATE',
-        status: 'Connect'
+        status: 'Active'
     },
     {
         id: 'manual',

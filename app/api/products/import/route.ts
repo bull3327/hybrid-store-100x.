@@ -1,33 +1,8 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import * as cheerio from 'cheerio';
+import { fetchProductData } from '@/lib/fetchers';
 
 const prisma = new PrismaClient();
-
-async function scrapeMetadata(url: string) {
-    try {
-        const res = await fetch(url, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Accept-Language': 'en-US,en;q=0.9'
-            }
-        });
-
-        if (!res.ok) return null;
-
-        const html = await res.text();
-        const $ = cheerio.load(html);
-
-        const title = $('meta[property="og:title"]').attr('content') || $('title').text() || 'Imported Product';
-        const image = $('meta[property="og:image"]').attr('content') || $('link[rel="image_src"]').attr('href') || '/placeholder.png';
-        const description = $('meta[property="og:description"]').attr('content') || '';
-
-        return { title, image, description };
-    } catch (e) {
-        console.error("Scraping failed", e);
-        return null; // Fallback to defaults
-    }
-}
 
 export async function POST(req: Request) {
     try {
@@ -44,24 +19,27 @@ export async function POST(req: Request) {
         let imageUrl = '/placeholder.png';
         let description = 'Imported product. Please edit details.';
 
+
         // Smart Detection
         if (url.includes('amazon') || url.includes('amzn')) {
-            sourcePlatform = "AMAZON";
-            productType = "AFFILIATE";
+            sourcePlatform = "AMAZON" as any;
+            productType = "AFFILIATE" as any;
         } else if (url.includes('aliexpress')) {
-            sourcePlatform = "ALIEXPRESS";
-            productType = "DROPSHIP";
+            sourcePlatform = "ALIEXPRESS" as any;
+            productType = "DROPSHIP" as any;
         } else if (url.includes('walmart')) {
-            sourcePlatform = "WALMART";
-            productType = "AFFILIATE";
+            sourcePlatform = "WALMART" as any;
+            productType = "AFFILIATE" as any;
         }
 
-        // Try to Scrape
-        const metadata = await scrapeMetadata(url);
+        // Try to Fetch Data (API / Scrape)
+        const metadata = await fetchProductData(url);
+
         if (metadata) {
-            if (metadata.title) title = metadata.title.substring(0, 100); // Trim long Amazon titles
-            if (metadata.image) imageUrl = metadata.image;
-            if (metadata.description) description = metadata.description;
+            if (metadata.title) title = metadata.title.substring(0, 150);
+            if (metadata.images && metadata.images.length > 0) imageUrl = metadata.images[0];
+            if (metadata.description) description = metadata.description.substring(0, 500) + '...';
+            if (metadata.price) price = metadata.price;
         }
 
         // Create Product

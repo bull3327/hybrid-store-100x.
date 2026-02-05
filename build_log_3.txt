@@ -1,0 +1,46 @@
+
+> hybrid-store-100x@0.1.0 build
+> next build
+
+   ▲ Next.js 14.1.0
+   - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/17) ...
+   Generating static pages (4/17) 
+   Generating static pages (8/17) 
+   Generating static pages (12/17) 
+ ✓ Generating static pages (17/17) 
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    186 B          96.2 kB
+├ ○ /_not-found                          882 B          85.1 kB
+├ ○ /admin                               139 B          84.4 kB
+├ ○ /admin/copilot                       3.45 kB        96.8 kB
+├ ○ /admin/import                        2.81 kB        96.1 kB
+├ ○ /admin/marketing                     6.61 kB         105 kB
+├ λ /admin/orders                        139 B          84.4 kB
+├ ○ /admin/products                      179 B          91.2 kB
+├ λ /admin/products/[id]                 179 B          91.2 kB
+├ λ /api/checkout                        0 B                0 B
+├ ○ /api/feed/facebook                   0 B                0 B
+├ λ /api/products/import                 0 B                0 B
+├ λ /api/webhook/stripe                  0 B                0 B
+├ λ /products                            3.03 kB         108 kB
+├ λ /products/[slug]                     2.23 kB         101 kB
+├ ○ /support                             4.12 kB         132 kB
+└ ○ /track-order                         3.15 kB         136 kB
++ First Load JS shared by all            84.2 kB
+  ├ chunks/69-5547f6e2c0d1547c.js        28.9 kB
+  ├ chunks/fd9d1056-b34e90ae3fbd908b.js  53.4 kB
+  └ other shared chunks (total)          1.96 kB
+
+
+○  (Static)   prerendered as static content
+λ  (Dynamic)  server-rendered on demand using Node.js
+

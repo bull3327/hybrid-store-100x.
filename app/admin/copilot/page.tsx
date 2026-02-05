@@ -9,28 +9,44 @@ import { useRouter } from 'next/navigation';
 // MOCK "LIVE" FEED (In real life, this fetches from your Python scraper/RapidAPI)
 const TRENDING_OPPORTUNITIES = [
     {
-        id: 't1',
-        title: 'Portable Neck Fan 3.0',
-        platform: 'Amazon Movers & Shakers',
-        growth: '+400%',
-        url: 'https://www.amazon.com/dp/B08XJ2K3M5',
-        image: 'https://m.media-amazon.com/images/I/71c3O0rWn+L._AC_SL1500_.jpg'
+        id: 'w1',
+        title: 'Ninja CREAMI Ice Cream Maker',
+        platform: 'Walmart Best Seller',
+        growth: 'Viral',
+        url: 'https://www.walmart.com/ip/Ninja-CREAMi-Ice-Cream-Maker/236471845',
+        image: 'https://images.unsplash.com/photo-1563319088-75e117498305?w=800&q=80'
     },
     {
-        id: 't2',
-        title: 'Galaxy Moon Lamp (Viral)',
-        platform: 'TikTok Creative Center',
-        growth: '+850%',
-        url: 'https://shopee.com/galaxy-lamp-fake', // Example
-        image: 'https://m.media-amazon.com/images/I/71N1Rk+oCJL._AC_SL1500_.jpg'
+        id: 'w2',
+        title: 'Dyson Airwrap Multi-Styler',
+        platform: 'Walmart Luxury',
+        growth: 'High Ticket',
+        url: 'https://www.walmart.com/ip/Dyson-Airwrap-Multi-Styler/123456789',
+        image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=800&q=80'
     },
     {
-        id: 't3',
-        title: 'Zero-Gravity Chair',
-        platform: 'Google Trends: "Furniture"',
-        growth: '+120%',
-        url: 'https://www.amazon.com/dp/B07F3S7S2V',
-        image: 'https://m.media-amazon.com/images/I/81x+r2s-ZLL._AC_SL1500_.jpg'
+        id: 'w3',
+        title: 'Sony PlayStation 5 Slim',
+        platform: 'Walmart Gaming',
+        growth: 'Top Tech',
+        url: 'https://www.walmart.com/ip/PlayStation-5-Slim-Console/5113184346',
+        image: 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=800&q=80'
+    },
+    {
+        id: 'w4',
+        title: 'Bissell Little Green Cleaner',
+        platform: 'Walmart Home',
+        growth: 'Evergreen',
+        url: 'https://www.walmart.com/ip/Bissell-Little-Green-Portable-Spot-Cleaner/50069382',
+        image: 'https://images.unsplash.com/photo-1581579186913-45ac3e6e3dd2?w=800&q=80'
+    },
+    {
+        id: 'w5',
+        title: 'Apple AirPods Pro (2nd Gen)',
+        platform: 'Walmart Electronics',
+        growth: 'High Vol',
+        url: 'https://www.walmart.com/ip/Apple-AirPods-Pro-2nd-Generation/1971776993',
+        image: 'https://images.unsplash.com/photo-1608248597279-f9cfa1a50ebd?w=800&q=80'
     }
 ];
 
@@ -40,8 +56,10 @@ export default function CopilotPage() {
     const router = useRouter();
 
     const handleImport = async (url: string) => {
+        if (!url) return;
+        console.log("Launching import for:", url);
         setLoading(true);
-        // Reuse our smart Import API
+
         try {
             const res = await fetch('/api/products/import', {
                 method: 'POST',
@@ -51,10 +69,15 @@ export default function CopilotPage() {
 
             if (res.ok) {
                 const data = await res.json();
+                console.log("Import success, redirecting to:", data.productId);
                 router.push(`/admin/products/${data.productId}`);
+            } else {
+                console.error("Import failed status:", res.status);
+                alert("Failed to launch product. Check console.");
             }
         } catch (e) {
-            alert("Auto-import failed.");
+            console.error("Import error:", e);
+            alert("Auto-import failed connecting to server.");
         } finally {
             setLoading(false);
         }
@@ -92,10 +115,10 @@ export default function CopilotPage() {
                 <div className="border rounded-2xl bg-card overflow-hidden shadow-sm">
                     <div className="p-6 border-b bg-gradient-to-r from-blue-500/10 to-transparent">
                         <h2 className="text-xl font-bold flex items-center gap-2">
-                            <TrendingUp className="h-5 w-5 text-blue-500" />
-                            Trend Hunter
+                            <TrendingUp className="h-5 w-5 text-blue-600" />
+                            Trend Hunter (Walmart Edition)
                         </h2>
-                        <p className="text-sm text-muted-foreground">Top movers detected in your niche (Updated: 1h ago)</p>
+                        <p className="text-sm text-muted-foreground">Top movers detected in your niche (Live)</p>
                     </div>
                     <div className="divide-y">
                         {TRENDING_OPPORTUNITIES.map((item) => (
